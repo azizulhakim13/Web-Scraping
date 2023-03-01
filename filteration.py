@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import csv
 
 print('Put some skill that you are not familiar with')
 unfamiliar_skill = input(">")
@@ -9,6 +10,14 @@ html_text = requests.get('https://www.timesjobs.com/candidate/job-search.html?se
 
 # ######### for all jobs
 soup = BeautifulSoup(html_text, 'lxml')
+
+csv_file = open('scrape.csv', 'w')
+
+csv_writer = csv.writer(csv_file)
+
+csv_writer.writerow(['company_name', 'skills', 'more_info', 'publish_date'])
+
+
 jobs = soup.find_all('li', class_ = 'clearfix job-bx wht-shd-bx')
 for job in jobs:
     publish_date =  job.find('span', class_ = 'sim-posted').span.text 
@@ -24,3 +33,6 @@ for job in jobs:
             print(f"Publish Date: {publish_date}")
 
         print("")
+
+        csv_writer.writerow([company_name, skills, more_info, publish_date])
+csv_file.close()
